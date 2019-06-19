@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzw.dao.ProductDao">
+	<!-- 分页查询结果 -->
+	<select id="selectProductByQueryVo" parameterType="QueryVo" resultType="Product">
+		select *
+		from product
+		<where>
+			<if test="productName!=null">
+				pname like "%"#{productName}"%"
+			</if>
+			<if test="productType!=null">
+				and ptype =#{productType}
+			</if>
+			<if test="productPrice!=null">
+				and price ${productPrice}
+			</if>
+		</where>
+		limit #{startRow},#{size}
+	</select>
+	
+	<!-- 查询商品总数 -->
+	<select id="count" resultType="Integer">
+		select count(1)
+		from product
+		<where>
+			<if test="productName!=null">
+				pname like "%"#{productName}"%"
+			</if>
+			<if test="productType!=null">
+				and ptype =#{productType}
+			</if>
+			<if test="productPrice!=null">
+				and price ${productPrice}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 商品添加 -->
+	<insert id="insertProduct" parameterType="Product">
+		insert into product (id,pname,ptype,price,pimage) 
+		values (null,#{pname},#{ptype},#{price},#{pimage})
+	</insert>
+	
+	<!-- 根据id删除商品 -->
+	<delete id="deleteProductById" parameterType="Integer">
+		delete from product where id=#{id}
+	</delete>
+	
+	<!-- 根据id查询商品信息 -->
+	<select id="selectProductById" parameterType="Integer" resultType="Product">
+		select *
+		from product
+		where id=#{id}
+	</select>
+	
+	<!-- 更新商品 -->
+	<update id="updateProduct" parameterType="Product">
+		update product set pname=#{pname},ptype=#{ptype},price=#{price},pimage=#{pimage}
+		where id=#{id}
+	</update>
+</mapper>

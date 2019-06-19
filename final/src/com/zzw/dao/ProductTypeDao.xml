@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzw.dao.ProductTypeDao">
+	<!--查询所有 -->
+	<select id="selectAll"  resultType="ProductType">
+		select *
+		from type
+	</select>
+	<!-- 根据id查询类别 -->
+	<select id="selectProductTypeById" parameterType="Integer" resultType="ProductType">
+		select *
+		from type
+		where id=#{id}
+	</select>
+	<!-- 修改类别 -->
+	<update id="updateProductType" parameterType="ProductType">
+		update type set typename=#{typename}
+		where id=#{id}
+	</update>
+	<!-- 删除类别 -->
+	<delete id="deleteProductTypeById" parameterType="Integer">
+		delete from type where id=#{id}
+	</delete>
+	<!-- 添加类别 -->
+	<insert id="addProductType" parameterType="ProductType">
+		insert into type (typename) 
+		values (#{typename}) 
+	</insert>
+	<!-- 根据名称查询 -->
+	<select id="selectProductTypeByName" parameterType="String" resultType="ProductType">
+		select *
+		from type
+		where typename=#{typename}
+	</select>
+</mapper>

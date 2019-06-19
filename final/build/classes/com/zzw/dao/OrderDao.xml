@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzw.dao.OrderDao">
+
+	<resultMap type="Order" id="orderMap">
+		<id column="oid" property="oid"/>
+		<result property="name" column="name" />
+		<result property="address" column="address" />
+		<result property="phone" column="phone" />
+		<result property="totalprice" column="totalprice" />
+		<result column="state" property="state"/>
+		<result column="ordertime" property="ordertime"/>
+		<collection property="orderItemList" ofType="OrderItem">
+			<id column="oiid" property="oiid"/>
+			<result column="pimage" property="pimage"/>
+			<result column="pname" property="pname"/>
+			<result column="price" property="price"/>
+			<result column="counts" property="counts"/>
+		</collection>
+	</resultMap>
+		<resultMap type="Order" id="allOrderMap">
+		<id column="oid" property="oid"/>
+		<result property="username" column="username" />
+		<result property="name" column="name" />
+		<result property="address" column="address" />
+		<result property="phone" column="phone" />
+		<result property="totalprice" column="totalprice" />
+		<result column="state" property="state"/>
+		<result column="ordertime" property="ordertime"/>
+		<collection property="orderItemList" ofType="OrderItem">
+			<id column="oiid" property="oiid"/>
+			<result column="pimage" property="pimage"/>
+			<result column="pname" property="pname"/>
+			<result column="price" property="price"/>
+			<result column="counts" property="counts"/>
+		</collection>
+	</resultMap>
+	<!--根据用户名查询订单信息-->
+	<select id="selectOrderByUsername" parameterType="String" resultMap="orderMap">
+		select o.oid,o.name,o.address,o.phone,o.totalprice,o.state,o.ordertime,oi.oiid,oi.pimage,oi.pname,oi.price,oi.counts
+		from orderitem oi join orders o on oi.oid=o.oid
+		where o.username=#{username}
+	</select>
+	<!-- 加入订单 -->
+	<insert id="insertOrder" parameterType="Order">
+		<selectKey keyProperty="oid" resultType="Integer" order="AFTER">
+			select LAST_INSERT_ID()
+		</selectKey>
+		insert into orders (name,address,phone,totalprice,state,username,ordertime) 
+		values (#{name},#{address},#{phone},#{totalprice},#{state},#{username},#{ordertime})
+	</insert>
+	<!-- 更改商品总价格 -->
+	<update id="updateTotalPrice" parameterType="Order">
+		update orders set totalprice=#{totalprice} 
+		where oid=#{oid} 
+	</update>
+	<!-- 更改订单状态 -->
+	<update id="updateOrderState" parameterType="Integer">
+		update orders set state=2 where oid=#{oid}	
+	</update>
+	<!-- 查询所有 -->
+	<select id="selectAll"  resultMap="allOrderMap">
+		select o.oid,o.username,o.name,o.address,o.phone,o.totalprice,o.state,o.ordertime,oi.oiid,oi.pimage,oi.pname,oi.price,oi.counts
+		from orderitem oi join orders o on oi.oid=o.oid
+	</select>
+	<!-- 删除订单 -->
+	<delete id="deleteOrder" parameterType="Integer">
+		delete from orders 
+		where oid=#{oid}
+	</delete>
+	<!-- 把订单状态变为待收货 -->
+	<update id="changeOrderState" parameterType="Integer">
+		update orders set state=1 where oid=#{oid}	
+	</update>
+</mapper>
